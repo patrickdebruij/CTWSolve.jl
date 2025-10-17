@@ -35,9 +35,9 @@ N²(y, z) = 1
 
 # Boundary conditions [top, bottom, left, right]:
 
-NormalFlowBCs = [:noflow, :noflow, :noflow, :noflow]
-NormalStressBCs = [:nostress, :nostress, :nostress, :noflow]
-NormalFluxBCs = [:none, :none, :none, :none]
+# NormalFlowBCs = [:noflow, :noflow, :noflow, :noflow]
+# NormalStressBCs = [:nostress, :nostress, :nostress, :noflow]
+# NormalFluxBCs = [:none, :none, :none, :none]
 
 # Create grid:
 
@@ -55,10 +55,5 @@ println("Solving EVP ...")
 ω, p = SolveProblem(prob, k; ω₀, n)
 
 # Plot a mode:
-
-# heatmap(grid.y[:, 1], grid.z[1, :], real(p[:, :, 1]))
-
-
-
-
-
+using Plots
+heatmap(grid.y[:, 1], grid.z[1, :], real(p[:, :, 1]))

@@ -39,5 +39,9 @@ println("Solving EVP ...")
 ω, p = SolveProblem(prob, k; ω₀, n)
 
 # Plot a mode:
+using Plots
 
-# heatmap(grid.y[:, 1], grid.z[1, :], real(p[:, :, 1]))
+for i in 1:n
+    heatmap(grid.y[:, 1], grid.ζ, real(p[:, :, i]), title="Mode $i")
+    display(current())
+end
