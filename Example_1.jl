@@ -6,26 +6,31 @@ This implementation does allow for viscous boundary conditions and non-constant 
 lead to a damping of the modes so a negative imaginary part for ω. They can be commented out/
 deleted to recover the usual inviscid problem.
 
+This script determines the dispersion curve ω = ω(k) for 
+k ∈ [0.1, 3]. We use ω₀ as an initial guess for ω and take
+ω₀ = 0.5*tanh.(k/2) here. Simpler ω₀ will also work, e.g.
+ω₀ = 0.5*ones(length(k)) but will generally be slower.
+
 """
 
 include("CTWSolve.jl")
 
 # Grid parameters:
 
-Ny, Nz = 41, 41
+Ny, Nz = 31, 21
 Ly = [0, 4]
-type = :chebyshev
+type = :laguerre
 
 # Numerical EVP parameters:
 
-k = 1.0
-ω₀ = 0.1 - 0.01im
-n = 5
+k = 0.1:0.1:3
+ω₀ = 0.5*tanh.(k/2)
+n = 6
 
 # Problem parameters:
 
 f = 1
-H₀ = 1
+H₀ = 0.7
 H(y) = H₀ + (1 - H₀) * tanh.(y)
 U(y, z) = exp.(-y)
 M²(y, z) = 0
@@ -49,10 +54,10 @@ grid = CreateGrid(Ny, Nz, Ly, H; type)
 println("Building EVP ...")
 prob = CreateProblem(grid; f, U, N², νv, νh, κv, κh, NormalFlowBCs, NormalStressBCs, NormalFluxBCs)
 
-# Solve EVP:
+# Solve EVP for dispersion curves:
 
 println("Solving EVP ...")
-ω, p = SolveProblem(prob, k; ω₀, n)
+ω = DispersionCurve(prob, k; n, ω₀, method = :all)
 
 # Plot a mode:
 using Plots
